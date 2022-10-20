@@ -5,7 +5,7 @@ import "./interfaces/ILottery.sol";
 import "./Ticket.sol";
 import "./interfaces/IPaymentToken.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-
+import "hardhat/console.sol";
 contract Lottery is ILottery, OwnableUpgradeable {
 
     /// @notice cannot be declared public or immutable since we are setting it up in the initialer for upgradability
@@ -15,24 +15,29 @@ contract Lottery is ILottery, OwnableUpgradeable {
 
     uint256 public ticketPrice;
     address public winner;
+    uint256 public winnerTicketId;
 
     IPaymentToken public paymentToken;
     Ticket public ticket;
 
     error TicketSaleEnded();
     error TicketSaleNotEnded();
+    error NoTicketsSold();
+    error NoWinnerTicketId();
 
     modifier onlyWinner() {
         require(msg.sender == winner, "Only winner can call this function");
         _;
     }
 
-    function initialize(bytes32 salt, address paymentTokenAddress) initializer public {
+    function initialize(bytes32 salt, address paymentTokenAddress, uint256 newTicketPrice) initializer public {
         __Ownable_init();
 
         saleStartTime = block.timestamp;
         saleDuration = 1 days;
+        ticketPrice = newTicketPrice;
         paymentToken = IPaymentToken(paymentTokenAddress);
+        paymentToken.approve(address(this), type(uint256).max);
 
         /// @notice specifying salt uses create2 opcode under the hood
         ticket = new Ticket{salt: salt}();
@@ -59,16 +64,13 @@ contract Lottery is ILottery, OwnableUpgradeable {
     /// @param ticketId - externaly stored id for our ticket. Stored inside the ticket URI
     /// @param deadline - deadline for the permit
     /// @param v - r - s - sig for permit
-    function buy(
+    function buyPermit(
         uint256 ticketId,
         uint256 deadline,
         uint8 v,
         bytes32 r,
         bytes32 s
     ) external {
-        if (block.timestamp > saleStartTime + saleDuration)
-            revert TicketSaleEnded();
-
         paymentToken.permit(
             msg.sender,
             address(this),
@@ -78,6 +80,20 @@ contract Lottery is ILottery, OwnableUpgradeable {
             r,
             s
         );
+
+        _buy(ticketId);
+    }
+
+    function buy(uint256 ticketId) external
+    {
+        _buy(ticketId);
+    }
+
+    function _buy(uint256 ticketId) internal
+    {
+        console.log('current contract address: ', address(this));
+        if (block.timestamp > saleStartTime + saleDuration)
+            revert TicketSaleEnded();
 
         bool success = paymentToken.transferFrom(
             msg.sender,
@@ -90,31 +106,53 @@ contract Lottery is ILottery, OwnableUpgradeable {
         ticket.mint(ticketId, msg.sender);
     }
 
-    function _awardWinner(address winner, uint256 tokenAmount) internal {
-        bool success = paymentToken.transferFrom(
-            address(this),
-            winner,
-            tokenAmount
-        );
-        require(success);
-    }
-
     function awardSurpriseWinner() external onlyOwner {
+        if(ticket.totalSupply() == 0)
+            revert NoTicketsSold();
+
         /// @notice blockhash can be manipulated for block numbers in the past, this is not true randomness
         /// for true randomness use an oracle
-        address currentWinner = ticket.ownerOf(ticket.tokenByIndex(uint(blockhash(block.number - 1)) % ticket.totalSupply()));
-        
-        _awardWinner(currentWinner, paymentToken.balanceOf(address(this)) / 2);
+        uint256 winnerIndex = uint(blockhash(block.number - 1)) % ticket.totalSupply();
+        uint256 tickedId = ticket.tokenByIndex(winnerIndex % ticket.totalSupply());
+        address currentWinner = ticket.ownerOf(tickedId);
+
+        _awardWinner(currentWinner, tickedId, paymentToken.balanceOf(address(this)) / 2);
     }
 
     function selectWinner() external onlyOwner {
         if (block.timestamp < saleStartTime + saleDuration)
             revert TicketSaleNotEnded();
 
-        winner = ticket.ownerOf(ticket.tokenByIndex(uint(blockhash(block.number - 1)) % ticket.totalSupply()));
+        if(ticket.totalSupply() == 0)
+            revert NoTicketsSold();
+        /// @notice blockhash can be manipulated for block numbers in the past, this is not true randomness
+        /// for true randomness use an oracle
+        uint256 winnerIndex = uint(blockhash(block.number - 1)) % ticket.totalSupply();
+        winnerTicketId = ticket.tokenByIndex(winnerIndex % ticket.totalSupply());
+        winner = ticket.ownerOf(winnerTicketId);
     }
 
     function claimRewards() external onlyWinner {
-        _awardWinner(msg.sender, paymentToken.balanceOf(address(this)) / 2);
+        if(winnerTicketId == 0)
+            revert NoWinnerTicketId();
+
+        if(ticket.balanceOf(msg.sender) == 0)
+            revert NoTicketsSold();
+
+        _awardWinner(msg.sender, winnerTicketId, paymentToken.balanceOf(address(this)));
+
+        winnerTicketId = 0;
+        winner = address(0);
+    }
+
+    function _awardWinner(address winner, uint256 ticketId, uint256 tokenAmount) internal {
+        bool success = paymentToken.transferFrom(
+            address(this),
+            winner,
+            tokenAmount
+        );
+        require(success);
+
+        ticket.burn(ticketId);
     }
 }

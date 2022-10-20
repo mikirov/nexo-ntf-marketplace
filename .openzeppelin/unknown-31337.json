@@ -2,7 +2,7 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-    "txHash": "0x806eff400193f9d69a406e12efd269fe49581ea1649603434bee8ca2abb65c81"
+    "txHash": "0x52e2afffcc5dc33259a7263e38c4f859dcb93d99b3eecb2b5ae6cbae87cf652a"
   },
   "proxies": [
     {
@@ -12,14 +12,14 @@
     },
     {
       "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-      "txHash": "0x52eabb832cbedc6c3de62dc7aed8e05bd46fa7ade10255ff861dc41ca57b7acf",
+      "txHash": "0x91834f43b0d212d1dd9476cb2426f6af7e810c610271bcb7dc4ecfa2207dfa95",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "decd601b89936befff63a006938e8837d289fd8a69da03568542f575585f9cf2": {
+    "cf1fbb7f204939d17a3000500b0d208764509b57fc55831998de64390aa51847": {
       "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-      "txHash": "0x87e896d55be9933225fde6693aac07fcf3a94c75cdea938e786be0b76b25ea41",
+      "txHash": "0xe02edba01e35bbbe0638977dec8f0e70492e892df8d7fa3241c36cfa6d06590c",
       "layout": {
         "solcVersion": "0.8.9",
         "storage": [
@@ -97,20 +97,28 @@
             "src": "contracts/Lottery.sol:17"
           },
           {
-            "label": "paymentToken",
+            "label": "winnerTicketId",
             "offset": 0,
             "slot": "105",
-            "type": "t_contract(IPaymentToken)3113",
+            "type": "t_uint256",
             "contract": "Lottery",
-            "src": "contracts/Lottery.sol:19"
+            "src": "contracts/Lottery.sol:18"
+          },
+          {
+            "label": "paymentToken",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_contract(IPaymentToken)3349",
+            "contract": "Lottery",
+            "src": "contracts/Lottery.sol:20"
           },
           {
             "label": "ticket",
             "offset": 0,
-            "slot": "106",
-            "type": "t_contract(Ticket)3043",
+            "slot": "107",
+            "type": "t_contract(Ticket)3265",
             "contract": "Lottery",
-            "src": "contracts/Lottery.sol:20"
+            "src": "contracts/Lottery.sol:21"
           }
         ],
         "types": {
@@ -130,11 +138,11 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_contract(IPaymentToken)3113": {
+          "t_contract(IPaymentToken)3349": {
             "label": "contract IPaymentToken",
             "numberOfBytes": "20"
           },
-          "t_contract(Ticket)3043": {
+          "t_contract(Ticket)3265": {
             "label": "contract Ticket",
             "numberOfBytes": "20"
           },

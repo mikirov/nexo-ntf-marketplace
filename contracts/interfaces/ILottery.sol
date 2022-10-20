@@ -2,12 +2,14 @@
 pragma solidity ^0.8.0 < 0.9.0;
 
 interface ILottery {
-    function buy(
+    function buyPermit(
         uint256 ticketId,
         uint256 deadline,
         uint8 v,
         bytes32 r,
         bytes32 s) external;
+
+    function buy(uint256 ticketId) external;
 
     function awardSurpriseWinner() external;
 
