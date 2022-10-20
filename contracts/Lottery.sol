@@ -145,10 +145,10 @@ contract Lottery is ILottery, OwnableUpgradeable {
         winner = address(0);
     }
 
-    function _awardWinner(address winner, uint256 ticketId, uint256 tokenAmount) internal {
+    function _awardWinner(address account, uint256 ticketId, uint256 tokenAmount) internal {
         bool success = paymentToken.transferFrom(
             address(this),
-            winner,
+            account,
             tokenAmount
         );
         require(success);

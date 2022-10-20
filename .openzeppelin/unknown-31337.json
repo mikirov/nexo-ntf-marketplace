@@ -108,7 +108,7 @@
             "label": "paymentToken",
             "offset": 0,
             "slot": "106",
-            "type": "t_contract(IPaymentToken)3349",
+            "type": "t_contract(IPaymentToken)4989",
             "contract": "Lottery",
             "src": "contracts/Lottery.sol:20"
           },
@@ -116,7 +116,7 @@
             "label": "ticket",
             "offset": 0,
             "slot": "107",
-            "type": "t_contract(Ticket)3265",
+            "type": "t_contract(Ticket)4905",
             "contract": "Lottery",
             "src": "contracts/Lottery.sol:21"
           }
@@ -138,11 +138,11 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_contract(IPaymentToken)3349": {
+          "t_contract(IPaymentToken)4989": {
             "label": "contract IPaymentToken",
             "numberOfBytes": "20"
           },
-          "t_contract(Ticket)3265": {
+          "t_contract(Ticket)4905": {
             "label": "contract Ticket",
             "numberOfBytes": "20"
           },
