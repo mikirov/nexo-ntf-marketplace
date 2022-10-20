@@ -1,6 +1,10 @@
 import { HardhatUserConfig, task } from "hardhat/config";
 
-import "@nomicfoundation/hardhat-toolbox";
+// import "@nomicfoundation/hardhat-toolbox";
+import "@typechain/hardhat";
+import "@nomicfoundation/hardhat-chai-matchers";
+import "@nomiclabs/hardhat-ethers";
+import "@typechain/hardhat";
 import '@openzeppelin/hardhat-upgrades';
 // import "hardhat-typechain";
 import "hardhat-deploy";
