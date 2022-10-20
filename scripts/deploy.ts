@@ -1,14 +1,22 @@
-const { ethers, upgrades } = require("hardhat");
+import { ethers, deployments, upgrades } from "hardhat";
 
-async function main() {
+export async function deploy() {
+  const salt = process.env.SALT || ethers.utils.formatBytes32String("salt");
+
+  const [deployer] = await ethers.getSigners();
+
+  const Ticket = await deployments.deploy("Ticket", {from: deployer.address, deterministicDeployment: salt})
+  console.log("Ticket deployed to:", Ticket.address);
   // Deploying
-  const Lottery = await ethers.getContractFactory("Lottery");
-  const instance = await upgrades.deployProxy(Lottery, [42]);
-  await instance.deployed();
+  const LotteryFactory = await ethers.getContractFactory("Lottery");
+  const Lottery = await upgrades.deployProxy(LotteryFactory, [salt, Ticket.address]);
+  await Lottery.deployed();
+
+  console.log("Lottery deployed to:", Lottery.address);
+  // console.log(Lottery);
+  // return Lottery;
 
   // Upgrading
-  // const TicketV2 = await ethers.getContractFactory("LotteryV2");
-  // const upgraded = await upgrades.upgradeProxy(instance.address, TicketV2);
+  // const LotteryV2 = await ethers.getContractFactory("LotteryV2");
+  // const upgraded = await upgrades.upgradeProxy(instance.address, LotterytV2);
 }
-
-main();

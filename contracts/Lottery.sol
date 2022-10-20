@@ -3,18 +3,21 @@ pragma solidity ^0.8.0 <0.9.0;
 
 import "./interfaces/ILottery.sol";
 import "./Ticket.sol";
-import "./PaymentToken.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./interfaces/IPaymentToken.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract Lottery is ILottery, Ownable {
+contract Lottery is ILottery, OwnableUpgradeable {
+
+    /// @notice cannot be declared public or immutable since we are setting it up in the initialer for upgradability
+    uint256 public saleStartTime;
     uint256 public saleDuration;
-    uint256 public immutable SALE_START_TIME;
+
 
     uint256 public ticketPrice;
     address public winner;
 
-    PaymentToken public immutable paymentToken;
-    Ticket public immutable ticket;
+    IPaymentToken public paymentToken;
+    Ticket public ticket;
 
     error TicketSaleEnded();
     error TicketSaleNotEnded();
@@ -24,10 +27,14 @@ contract Lottery is ILottery, Ownable {
         _;
     }
 
-    constructor(bytes32 salt) {
-        SALE_START_TIME = block.timestamp;
+    function initialize(bytes32 salt, address paymentTokenAddress) initializer public {
+        __Ownable_init();
+
+        saleStartTime = block.timestamp;
         saleDuration = 1 days;
-        paymentToken = new PaymentToken{salt: salt}();
+        paymentToken = IPaymentToken(paymentTokenAddress);
+
+        /// @notice specifying salt uses create2 opcode under the hood
         ticket = new Ticket{salt: salt}();
 
         /// @notice deploy a new ticket contract with create2
@@ -59,7 +66,7 @@ contract Lottery is ILottery, Ownable {
         bytes32 r,
         bytes32 s
     ) external {
-        if (block.timestamp > SALE_START_TIME + saleDuration)
+        if (block.timestamp > saleStartTime + saleDuration)
             revert TicketSaleEnded();
 
         paymentToken.permit(
@@ -101,7 +108,7 @@ contract Lottery is ILottery, Ownable {
     }
 
     function selectWinner() external onlyOwner {
-        if (block.timestamp < SALE_START_TIME + saleDuration)
+        if (block.timestamp < saleStartTime + saleDuration)
             revert TicketSaleNotEnded();
 
         winner = ticket.ownerOf(ticket.tokenByIndex(uint(blockhash(block.number - 1)) % ticket.totalSupply()));

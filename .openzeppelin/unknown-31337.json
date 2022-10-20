@@ -1,0 +1,153 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+    "txHash": "0x806eff400193f9d69a406e12efd269fe49581ea1649603434bee8ca2abb65c81"
+  },
+  "proxies": [
+    {
+      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      "txHash": "0x620acb132315da173720bd0671d16d5391bed59ddce03797216c97a38b53a26b",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "txHash": "0x52eabb832cbedc6c3de62dc7aed8e05bd46fa7ade10255ff861dc41ca57b7acf",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "decd601b89936befff63a006938e8837d289fd8a69da03568542f575585f9cf2": {
+      "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      "txHash": "0x87e896d55be9933225fde6693aac07fcf3a94c75cdea938e786be0b76b25ea41",
+      "layout": {
+        "solcVersion": "0.8.9",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "saleStartTime",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_uint256",
+            "contract": "Lottery",
+            "src": "contracts/Lottery.sol:12"
+          },
+          {
+            "label": "saleDuration",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_uint256",
+            "contract": "Lottery",
+            "src": "contracts/Lottery.sol:13"
+          },
+          {
+            "label": "ticketPrice",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_uint256",
+            "contract": "Lottery",
+            "src": "contracts/Lottery.sol:16"
+          },
+          {
+            "label": "winner",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_address",
+            "contract": "Lottery",
+            "src": "contracts/Lottery.sol:17"
+          },
+          {
+            "label": "paymentToken",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_contract(IPaymentToken)3113",
+            "contract": "Lottery",
+            "src": "contracts/Lottery.sol:19"
+          },
+          {
+            "label": "ticket",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_contract(Ticket)3043",
+            "contract": "Lottery",
+            "src": "contracts/Lottery.sol:20"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IPaymentToken)3113": {
+            "label": "contract IPaymentToken",
+            "numberOfBytes": "20"
+          },
+          "t_contract(Ticket)3043": {
+            "label": "contract Ticket",
+            "numberOfBytes": "20"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    }
+  }
+}
